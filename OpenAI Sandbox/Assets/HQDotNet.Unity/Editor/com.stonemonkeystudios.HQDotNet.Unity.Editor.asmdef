@@ -1,0 +1,16 @@
+{
+    "name": "com.stonemonkeystudios.HQDotNet.Unity.Editor",
+    "rootNamespace": "HQDotNet.Unity.Editor",
+    "references": [
+        "GUID:692c8c787e9a3af45ac4cd8a2e4b8a10"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
