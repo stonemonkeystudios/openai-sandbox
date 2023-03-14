@@ -31,8 +31,10 @@ namespace HQDotNet.Unity {
         }
 
         public virtual void OnDestroy() {
-            MainThreadSyncer.DestroyInstance();
-            HQViewMediator.DestroyInstance();
+            if(MainThreadSyncer.Instance != null)
+                MainThreadSyncer.DestroyInstance();
+            if(HQViewMediator.Instance != null)
+                HQViewMediator.DestroyInstance();
             if (_session != null)
                 _session.Shutdown();
             _session = null;
