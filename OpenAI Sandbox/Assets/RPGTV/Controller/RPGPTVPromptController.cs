@@ -13,6 +13,8 @@ namespace RPGPTV {
             initialPrompt += " " + GetCommandPromptDescription();
             initialPrompt += " " + GetScenePromptDescription();
             initialPrompt += " " + GetCharacterPromptDescription();
+            initialPrompt += " " + GetCharacterSpeakDialogDescription();
+            initialPrompt += " " + GetNarrationDescription();
 
             initialPrompt += " " + GetInitialPrompt();
             Debug.Log(initialPrompt);
@@ -22,7 +24,25 @@ namespace RPGPTV {
         }
 
         private string GetInitialPrompt() {
-            return "Begin issuing commands. The first two commands should be to change scene and populate it with characters. There should be no other text but two json objects representing commands.";
+            return "Begin issuing commands. The first two commands should be to change scene and populate it with one or more characters. " +
+                "After that begin the scene using all available commands at your disposal. " +
+                "Start with 5 commands after the scene setup and character setup." +
+                "There should be no other text but json objects representing commands.";
+        }
+
+        private string GetCharacterSpeakDialogDescription() {
+            return "Available command to use: CHARACTER_SPEAK - You can have a character speak dialogue by issuing a command of this format:" +
+                "{" +
+                "characterName:\"The name of the character speaking. The character must be in the scene to speak.\"," +
+                "characterDialog: \"The dialog for the character to speak\"" +
+                "}";
+        }
+
+        private string GetNarrationDescription() {
+            return "Available command to use: NARRATION - You can add narration to the scene to highten emotion by issuing a command of this format:" +
+                "{" +
+                "narrationText: \"Text to use for narration.\"" +
+                "}";
         }
 
         private string GetCharacterPromptDescription() {
