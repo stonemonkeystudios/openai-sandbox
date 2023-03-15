@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/RPGTV/Scenes/FOREST.unity
+    guid: a958c5bc8286ddd408c6953468ab3159
+  - enabled: 1
+    path: Assets/RPGTV/Scenes/ROOM1.unity
+    guid: 22d789deef10cc04bb8186329aae3108
   m_configObjects: {}

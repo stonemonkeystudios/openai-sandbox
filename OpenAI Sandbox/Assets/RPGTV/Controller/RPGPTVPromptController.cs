@@ -100,8 +100,9 @@ namespace RPGPTV {
 
         private void ExecuteNextCommand() {
             var command = commandsList[0];
+            Debug.Log("Execute next command: " + command.command);
             commandsList.RemoveAt(0);
-            if(command.command == COMMANDS.SCENE_CHANGE.ToString())
+            if(command.command == COMMANDS.SCENE_CHANGE.ToString() || command.command == COMMANDS.NARRATION.ToString() || command.command == COMMANDS.CHARACTER_SPEAK.ToString())
                Session.Dispatcher.Dispatch<ICommandReceivedListener>(listener => listener.CommandReceived(command));
             else {
                 Session.Dispatcher.Dispatch<ICommandCompletedListener>(listener => listener.CommandCompleted(command));
@@ -169,14 +170,14 @@ namespace RPGPTV {
         }
 
         private string GetScenePromptDescription() {
-            return "Available command: SCENE_CHANGE - You can issue a change of scenes by issuing a command of this format: " +
+            return "Available command: SCENE_CHANGE - You can issue a change scenes by issuing a command of this format: " +
                 "{" +
                 " \"sceneName\":\"String representing the name of the scene\"," +
-                " \"isDay\":true or false depending on whether the scene is day or night," +
+                " \"isDay\":true or false," +
                 " " +
                 "}." +
-                " The data after CHANGE_SCENE is a json object describing a scene, and should only ever equal one of the following strings:" +
-                " FOREST.unity, ROOM1.unity ";
+                " The data after CHANGE_SCENE is a json object describing a scene, and be one of the following strings:" +
+                " FOREST, ROOM, CITY, TEMPLE, MOUNTAIN, SCHOOL ";
         }
 
         private string GetCommandPromptDescription() {
