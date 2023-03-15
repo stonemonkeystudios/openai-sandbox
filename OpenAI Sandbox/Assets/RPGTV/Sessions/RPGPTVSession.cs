@@ -20,6 +20,7 @@ namespace RPGPTV {
             //Register Controllers
             _session.RegisterController<SMSOpenAIController>();
             _session.RegisterController<RPGPTVPromptController>();
+            _session.RegisterController<RPGPTVSceneChangeController>();
 
             SendModelUpdates();
         }
