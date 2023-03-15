@@ -10,7 +10,9 @@ namespace RPGPTV {
     public class RPGPTVPromptController : HQController {
 
         [HQInject]
-        SMSOpenAIController openAIController;
+        private SMSOpenAIController openAIController;
+
+        private List<RPGPTVCommandModel> commandsList = new List<RPGPTVCommandModel>();
 
         public override bool Startup() {
 
@@ -44,12 +46,25 @@ namespace RPGPTV {
 
         private void ParseResponseForCommands(ChatResponse response) {
             Debug.Log("Response: " + response.FirstChoice.Message);
+            string[] commandArr = response.FirstChoice.Message.Content.Split("\n");
+            for(int i = 0; i < commandArr.Length; i++) {
+                if (string.IsNullOrEmpty(commandArr[i]))
+                    continue;
+                try {
+                    var obj = JsonUtility.FromJson<RPGPTVCommandModel>(commandArr[i]);
+                    commandsList.Add(obj);
+                }
+                catch(System.Exception e) {
+                    Debug.LogException(e);
+                }
+            }
+            Debug.Log("THERE ARE " + commandsList.Count + " COMMANDS PENDING");
         }
 
         private string GetInitialPrompt() {
             return "Begin issuing commands. The first two commands should be to change scene and populate it with one or more characters. " +
                 "After that begin the scene using all available commands at your disposal. " +
-                "Start with 5 commands after the scene setup and character setup." +
+                "Start with Give me one command at a time, beginning with a scene change." +
                 "There should be no other text but json objects representing commands." +
                 "Any time you switch scenes, you must populate the scene with all characters involved. There is no continuity between scenes in terms of which characters are here.";
         }
@@ -100,7 +115,7 @@ namespace RPGPTV {
                 "}" +
                 "data is a json object that represents the data for one of the commands. Each command requires a separate json object format to be represented in the data object here." +
                 "Every message should be a valid json object." +
-                "The data object must be encapsulated as a string.";
+                "The data object must be encapsulated as a string. THIS IS IMPORTANT, I REPEAT, you must put double quotes around the json object within the data field. THIS IS IMPORTANT. Absolutely the most important thing is that the data type of the 'data' parameter is string. it is always string, with substrings being encapsulated with a backslash.";
 
         }
 
