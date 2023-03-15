@@ -144,7 +144,7 @@ namespace RPGPTV {
         }
 
         private string GetRecurringUserMessage() {
-            return "ABSOLUTELY IMPORTANT!! Give me a command to continue the scene. Only include the command objects and no other text. This should NOT be formatted as a list with numbers. Only one command object per line and nothing else.";
+            return "ABSOLUTELY IMPORTANT!! Give me 5 commands to continue the scene. Only include the command objects and no other text.";
         }
 
         private string GetNegativeFilters() {

@@ -16,7 +16,7 @@ namespace RPGPTV {
 
         private AudioClip GetNamedClip(string name) {
             foreach (var music in musicClips) {
-                if (name.Trim().ToLower() == music.name.Trim().ToLower())
+                if (name.Contains(music.name))
                     return music;
             }
             return null;
@@ -25,8 +25,9 @@ namespace RPGPTV {
         private IEnumerator CrossFade(AudioClip newClip, System.Action callback) {
             AudioSource fadeIn = useSource1 ? audioSource1 : audioSource2;
             AudioSource fadeOut = useSource1 ? audioSource2 : audioSource1;
-            fadeIn.Play();
+            fadeIn.Stop();
             fadeIn.clip = newClip;
+            fadeIn.Play();
             fadeIn.volume = 0f;
             float startTime = Time.time;
             while(Time.time < startTime + crossFadeTime) {
@@ -48,15 +49,18 @@ namespace RPGPTV {
                     var clip = GetNamedClip(command.data);
                     if (clip == null) {
                         Debug.LogError("Could not find clip " + command.data);
+                        DispatchCompleteCallback();
                         return;
                     }
-                    StartCoroutine(CrossFade(clip, () => {
-                        var temp = currentCommand;
-                        currentCommand = null;
-                        _session.Dispatcher.Dispatch<ICommandCompletedListener>(listener => listener.CommandCompleted(temp.Value));
-                    }));
+                    StartCoroutine(CrossFade(clip, DispatchCompleteCallback));
                 });
             }
+        }
+
+        void DispatchCompleteCallback() {
+            var temp = currentCommand;
+            currentCommand = null;
+            _session.Dispatcher.Dispatch<ICommandCompletedListener>(listener => listener.CommandCompleted(temp.Value));
         }
     }  
 }
