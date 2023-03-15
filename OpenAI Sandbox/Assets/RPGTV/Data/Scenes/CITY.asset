@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1bb5ab7d844810499bd835fb58b54b8, type: 3}
   m_Name: CITY
   m_EditorClassIdentifier: 
-  sceneName: FOREST
+  sceneName: CITY
   nightImage: {fileID: 21300000, guid: 631692547fa4255478681262cbceb442, type: 3}
   dayImage: {fileID: 21300000, guid: 60dd79b10890e634a8f9a097e5361a55, type: 3}

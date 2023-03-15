@@ -30,11 +30,11 @@ namespace RPGPTV {
         private IEnumerator Fade(float from, float to, System.Action callback) {
             yield return new WaitForSeconds(waitToFadeTime);
             float startTime = Time.time;
-            Color c = bgImage.color;
-            while(startTime + fadeTime <= Time.time) {
+            Color c = fadeImage.color;
+            while(Time.time < startTime + fadeTime) {
                 float t = (Time.time - startTime) / fadeTime;
                 c.a = Mathf.Lerp(from, to, t);
-                bgImage.color = c;
+                fadeImage.color = c;
                 yield return null;
             }
             callback?.Invoke();

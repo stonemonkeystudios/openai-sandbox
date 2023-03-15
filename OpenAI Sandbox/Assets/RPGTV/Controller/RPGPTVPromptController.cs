@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace RPGPTV {
     public class RPGPTVPromptController : HQController, ICommandCompletedListener {
 
-        public enum COMMANDS { SCENE_CHANGE, ADD_CHARACTER_TO_SCENE, NARRATION, CHARACTER_SPEAK };
+        public enum COMMANDS { SCENE_CHANGE, ADD_CHARACTER_TO_SCENE, NARRATION, CHARACTER_SPEAK, PLAY_MUSIC };
         [HQInject]
         private SMSOpenAIController openAIController;
 
@@ -35,6 +35,7 @@ namespace RPGPTV {
             systemPrompt += " " + GetCharacterPromptDescription();
             systemPrompt += " " + GetCharacterSpeakDialogDescription();
             systemPrompt += " " + GetNarrationDescription();
+            systemPrompt += " " + GetMusicCommandDescription();
             //systemPrompt += " " + GetGoodExamplesDescription();
             systemPrompt += " " + GetNegativeFilters();
             systemPrompt += " " + GetFinalSystemMessages();
@@ -102,7 +103,7 @@ namespace RPGPTV {
             var command = commandsList[0];
             Debug.Log("Execute next command: " + command.command);
             commandsList.RemoveAt(0);
-            if(command.command == COMMANDS.SCENE_CHANGE.ToString() || command.command == COMMANDS.NARRATION.ToString() || command.command == COMMANDS.CHARACTER_SPEAK.ToString())
+            if(command.command != COMMANDS.ADD_CHARACTER_TO_SCENE.ToString())
                Session.Dispatcher.Dispatch<ICommandReceivedListener>(listener => listener.CommandReceived(command));
             else {
                 Session.Dispatcher.Dispatch<ICommandCompletedListener>(listener => listener.CommandCompleted(command));
@@ -124,8 +125,13 @@ namespace RPGPTV {
 
         #region Initial Conditions (Prompt) setup
 
+        private string GetMusicCommandDescription() {
+            return "Available command: PLAY_MUSIC. The data for this command should be a simple string from this list: " +
+                "AllIsLost, BackToNormal, BossBattle, Epilogue, RecoveringHope, Triumphant, Casual, Danger, Dramatic, MainTitle, Melancholy, ShadyDealing, Slow, ThingsWillBeOk, TraditionalJapanese, Upbeat";
+        }
+
         private string GetFinalSystemMessages() {
-            return "When you Begin issuing commands for the very first time, make sure to set up scene and characters." +
+            return "When you Begin issuing commands for the very first time, make sure to set up scene, music, and characters." +
                 "There should be no other text but json objects representing commands." +
                 "Any time you switch scenes, you must populate the scene with all characters involved." +
                 "Every command should be on a single line, with new line characters ONLY appearing at the end of a command line.";
