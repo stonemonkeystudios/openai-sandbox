@@ -2,9 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using HQDotNet;
+using SMS.OpenAI;
+using OpenAI.Chat;
+using System.Threading.Tasks;
 
 namespace RPGPTV {
     public class RPGPTVPromptController : HQController {
+
+        [HQInject]
+        SMSOpenAIController openAIController;
 
         public override bool Startup() {
 
@@ -18,16 +24,34 @@ namespace RPGPTV {
 
             initialPrompt += " " + GetInitialPrompt();
             Debug.Log(initialPrompt);
-
+            //GetInitialResponse(initialPrompt);
+            Task.Run(()=>GetInitialResponse(initialPrompt));
 
             return base.Startup();
+        }
+
+        private async void GetInitialResponse(string initialPrompt) {
+            ChatPrompt chatPrompt = new ChatPrompt("system", initialPrompt);
+            ChatRequest chatRequest = new ChatRequest(new List<ChatPrompt>() { chatPrompt }, OpenAI.Models.Model.GPT3_5_Turbo);
+            try {
+                var response = await openAIController.openAIClient.ChatEndpoint.GetCompletionAsync(chatRequest);
+                ParseResponseForCommands(response);
+            }
+            catch(System.Exception e) {
+                Debug.LogException(e);
+            }
+        }
+
+        private void ParseResponseForCommands(ChatResponse response) {
+            Debug.Log("Response: " + response.FirstChoice.Message);
         }
 
         private string GetInitialPrompt() {
             return "Begin issuing commands. The first two commands should be to change scene and populate it with one or more characters. " +
                 "After that begin the scene using all available commands at your disposal. " +
                 "Start with 5 commands after the scene setup and character setup." +
-                "There should be no other text but json objects representing commands.";
+                "There should be no other text but json objects representing commands." +
+                "Any time you switch scenes, you must populate the scene with all characters involved. There is no continuity between scenes in terms of which characters are here.";
         }
 
         private string GetCharacterSpeakDialogDescription() {
@@ -72,10 +96,11 @@ namespace RPGPTV {
                 "Every message should be formatted as a json file that follows these outlines:" +
                 "{" +
                 "command:\"A valid command name from the available choices\"," +
-                "data:{}" +
+                "data:\"{}\"" +
                 "}" +
                 "data is a json object that represents the data for one of the commands. Each command requires a separate json object format to be represented in the data object here." +
-                "Every message should be a valid json object.";
+                "Every message should be a valid json object." +
+                "The data object must be encapsulated as a string.";
 
         }
 
