@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e600e8b53abdbff449175d6c2abe03c3, type: 3}
   m_Name: SMSOpenAIConfigurationSettings
   m_EditorClassIdentifier: 
-  apiKey: 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
-  orgId: org-6xctjPoNEicxUHFXauRJHWMG
+  apiKey: 
+  orgId: 
